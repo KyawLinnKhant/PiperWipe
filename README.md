@@ -72,9 +72,13 @@ Animated demo (top-down view, live force gauge, tool trail coloured by mode):
 
 ### RViz playback
 
-*Coming soon — recorded screen capture of the joint trajectories
-executing on `/arm_controller/follow_joint_trajectory` against the live
-MoveIt 2 + kitchen scene.*
+Recorded screen capture of the joint trajectories executing on
+`/arm_controller/follow_joint_trajectory` against the live MoveIt 2 +
+kitchen scene:
+
+https://github.com/KyawLinnKhant/PiperWipe/raw/main/section2/outputs/wipe_rviz.mov
+
+(Download / open in browser; GitHub does not inline-render `.mov`.)
 
 ---
 
