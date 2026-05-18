@@ -19,7 +19,7 @@ section3/
     ├── <surface>_tracking.png          ← force/velocity/mode timeline
     ├── obstacle_event_closeup.png      ← zoom on the arc-over event
     ├── wiping_demo.gif                 ← animated demo (faucet arc-over)
-    ├── wipe_rviz.mov                   ← RViz screen capture of the wipe (Deliverable 3)
+    ├── wipe_rviz.mp4                   ← RViz screen capture of the wipe (Deliverable 3)
     └── trajectory_countertop_naive.csv ← synthetic trajectory that crosses the faucet
 ```
 
@@ -29,9 +29,7 @@ RViz playback of the Section 2 joint trajectories executing on
 `/arm_controller/follow_joint_trajectory` against the live MoveIt 2 +
 kitchen scene:
 
-https://github.com/KyawLinnKhant/PiperWipe/raw/main/section3/outputs/wipe_rviz.mov
-
-(Download / open in browser; GitHub does not inline-render `.mov`.)
+https://github.com/KyawLinnKhant/PiperWipe/raw/main/section3/outputs/wipe_rviz.mp4
 
 ## Spec compliance (Section 3 requirements)
 

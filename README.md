@@ -6,6 +6,8 @@
 [![NumPy](https://img.shields.io/badge/NumPy-013243?logo=numpy&logoColor=white)](https://numpy.org/)
 [![Matplotlib](https://img.shields.io/badge/Matplotlib-11557C)](https://matplotlib.org/)
 
+https://github.com/KyawLinnKhant/PiperWipe/raw/main/section2/outputs/wipe_rviz.mp4
+
 End-to-end take-home for a kitchen-cleaning manipulator: kinematics &
 reachability → coverage path planning → contact-aware force control.
 Three self-contained sections, each with code, plots, and a write-up.
@@ -74,20 +76,11 @@ Animated demo (top-down view, live force gauge, tool trail coloured by mode):
 
 Recorded screen capture of the joint trajectories executing on
 `/arm_controller/follow_joint_trajectory` against the live MoveIt 2 +
-kitchen scene. Inlined below; download links above each video.
+kitchen scene:
 
-**Section 2 — coverage trajectories in RViz:**
-[Download `section2/outputs/wipe_rviz.mov`](https://github.com/KyawLinnKhant/PiperWipe/raw/main/section2/outputs/wipe_rviz.mov)
+https://github.com/KyawLinnKhant/PiperWipe/raw/main/section3/outputs/wipe_rviz.mp4
 
-https://github.com/KyawLinnKhant/PiperWipe/raw/main/section2/outputs/wipe_rviz.mov
-
-**Section 3 — contact-aware wipe demo:**
-[Download `section3/outputs/wipe_rviz.mov`](https://github.com/KyawLinnKhant/PiperWipe/raw/main/section3/outputs/wipe_rviz.mov)
-
-https://github.com/KyawLinnKhant/PiperWipe/raw/main/section3/outputs/wipe_rviz.mov
-
-GitHub inline-renders `.mov` on the rendered README page once the file is
-fetched; if your browser does not autoplay it, use the download links above.
+(Also at [`section2/outputs/wipe_rviz.mp4`](https://github.com/KyawLinnKhant/PiperWipe/raw/main/section2/outputs/wipe_rviz.mp4).)
 
 ---
 
