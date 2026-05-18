@@ -29,10 +29,9 @@ RViz playback of the Section 2 joint trajectories executing on
 `/arm_controller/follow_joint_trajectory` against the live MoveIt 2 +
 kitchen scene:
 
-<video src="https://github.com/KyawLinnKhant/PiperWipe/raw/main/section3/outputs/wipe_rviz.mp4" controls muted width="100%"></video>
+[![Wipe demo — click to watch](https://img.youtube.com/vi/7buQRrrkuFw/maxresdefault.jpg)](https://youtube.com/shorts/7buQRrrkuFw)
 
-If the inline player doesn't load, download
-[`outputs/wipe_rviz.mp4`](outputs/wipe_rviz.mp4).
+Raw mp4 also in repo at [`outputs/wipe_rviz.mp4`](outputs/wipe_rviz.mp4).
 
 ## Spec compliance (Section 3 requirements)
 
