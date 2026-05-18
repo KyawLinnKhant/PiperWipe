@@ -70,15 +70,24 @@ Animated demo (top-down view, live force gauge, tool trail coloured by mode):
 
 ![](section3/outputs/wiping_demo.gif)
 
-### RViz playback
+### RViz playback (Section 3 deliverable)
 
 Recorded screen capture of the joint trajectories executing on
 `/arm_controller/follow_joint_trajectory` against the live MoveIt 2 +
-kitchen scene:
+kitchen scene. Inlined below; download links above each video.
+
+**Section 2 — coverage trajectories in RViz:**
+[Download `section2/outputs/wipe_rviz.mov`](https://github.com/KyawLinnKhant/PiperWipe/raw/main/section2/outputs/wipe_rviz.mov)
 
 https://github.com/KyawLinnKhant/PiperWipe/raw/main/section2/outputs/wipe_rviz.mov
 
-(Download / open in browser; GitHub does not inline-render `.mov`.)
+**Section 3 — contact-aware wipe demo:**
+[Download `section3/outputs/wipe_rviz.mov`](https://github.com/KyawLinnKhant/PiperWipe/raw/main/section3/outputs/wipe_rviz.mov)
+
+https://github.com/KyawLinnKhant/PiperWipe/raw/main/section3/outputs/wipe_rviz.mov
+
+GitHub inline-renders `.mov` on the rendered README page once the file is
+fetched; if your browser does not autoplay it, use the download links above.
 
 ---
 
