@@ -1,0 +1,18 @@
+{
+  "countertop": {
+    "waypoints": 303,
+    "ik_solved": 231,
+    "coverage_pct": 81.917502787068,
+    "path_length_m": 6.77690637687799,
+    "duration_s": 26.04384667521268,
+    "speed_mps": 0.2
+  },
+  "mirror": {
+    "waypoints": 111,
+    "ik_solved": 108,
+    "coverage_pct": 79.5701754385965,
+    "path_length_m": 2.6948498926334916,
+    "duration_s": 17.791957566398107,
+    "speed_mps": 0.15
+  }
+}
