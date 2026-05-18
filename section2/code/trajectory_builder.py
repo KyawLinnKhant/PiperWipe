@@ -51,12 +51,28 @@ def build_trajectory(plan: CoveragePlan, solver: IKSolver,
                      pitch_yaw_lattice: List[tuple] = None) -> List[TrajectoryPoint]:
     """Solve IK + time-parameterize. Updates plan.path_length_m / duration_s."""
     if pitch_yaw_lattice is None:
-        # Cheap first, lean later — matches the Section 1 heatmap order.
-        pitch_yaw_lattice = [
-            (0, 0), (0, 30), (0, -30), (0, 60), (0, -60), (0, 90), (0, -90),
-            (5, 0), (5, 30), (5, -30), (-5, 0), (-5, 30), (-5, -30),
-            (10, 0), (10, 30), (10, -30), (-10, 0), (-10, 30), (-10, -30),
-        ]
+        if plan.surface == "mirror":
+            # Prefer tcp_yaw = ±90° so the sponge (pad long axis along tool X)
+            # stays VERTICAL on the mirror — long axis aligned with world Z.
+            # Fall back to other yaws + small pitches only if the preferred
+            # configuration fails IK at an edge cell.
+            pitch_yaw_lattice = [
+                (0,  90), (0, -90),
+                (0,  60), (0, -60), (0, 120), (0, -120),
+                (5,  90), (5, -90), (-5,  90), (-5, -90),
+                (10, 90), (10, -90), (-10, 90), (-10, -90),
+                (0,   0), (0,  30), (0, -30),
+                (0, 150), (0, -150),
+            ]
+        else:
+            # Countertop — default order: yaw=0 first (sponge long axis along
+            # world X = along the countertop's long dimension). Falls back to
+            # ±yaw when an edge cell needs a different wrist roll to solve IK.
+            pitch_yaw_lattice = [
+                (0, 0), (0, 30), (0, -30), (0, 60), (0, -60), (0, 90), (0, -90),
+                (5, 0), (5, 30), (5, -30), (-5, 0), (-5, 30), (-5, -30),
+                (10, 0), (10, 30), (10, -30), (-10, 0), (-10, 30), (-10, -30),
+            ]
 
     speed = SPEED.get(plan.surface, 0.15)
     pts: List[TrajectoryPoint] = []
@@ -66,8 +82,18 @@ def build_trajectory(plan: CoveragePlan, solver: IKSolver,
     n_solved = 0
 
     for i, wp in enumerate(plan.waypoints):
+        # If the waypoint declares a preferred orientation (e.g. sponge
+        # perpendicular vs parallel to the motion direction), try it first.
+        attempts = list(pitch_yaw_lattice)
+        if wp.preferred_yaw_deg is not None:
+            preferred = (
+                wp.preferred_pitch_deg if wp.preferred_pitch_deg is not None else 0.0,
+                wp.preferred_yaw_deg,
+            )
+            attempts = [preferred] + [a for a in pitch_yaw_lattice if a != preferred]
+
         solved = None
-        for pitch_deg, yaw_deg in pitch_yaw_lattice:
+        for pitch_deg, yaw_deg in attempts:
             r = solver.solve(
                 wp.x, wp.y, wp.z,
                 surface=wp.surface,

@@ -79,7 +79,7 @@ FAUCET_COLUMN_Y_MIN = 0.30     # only the back half of counter (faucet at y=0.50
 #     the arm body fouls the faucet when wiping there — carve out a 10 cm
 #     radius SEMICIRCLE centred on the bottom edge (X=0, Z=0).
 MIRROR_MAX_WIPE_Z = 0.45              # m — cap a bit below the topmost reach
-MIRROR_BOTTOM_BAN_RADIUS = 0.10       # m — semicircle radius at bottom-middle
+MIRROR_BOTTOM_BAN_RADIUS = 0.13       # m — semicircle radius at bottom-middle (enlarged for gripper-body clearance)
 
 # Gripper-tip offset along link6's +Z (see Section 1 writeup).
 GRIPPER_TIP_OFFSET = 0.1358
@@ -98,6 +98,13 @@ class Waypoint:
     surface: str       # "countertop" or "mirror"
     yaw: float = 0.0   # TCP yaw (rad) about the tool approach axis
     pitch: float = 0.0 # tilt about tool +X axis (rad)
+    # Optional per-waypoint preferred IK orientation. When set, the trajectory
+    # builder tries this (pitch_deg, yaw_deg) FIRST before falling back to the
+    # surface's default lattice. Used to rotate the sponge between "vertical"
+    # (perpendicular to motion → wide swath) during a sweep and "horizontal"
+    # (parallel to motion direction) during a transition.
+    preferred_pitch_deg: Optional[float] = None
+    preferred_yaw_deg: Optional[float] = None
 
 
 @dataclass
@@ -249,39 +256,57 @@ def raster_countertop(
     direction = +1
     z_target = COUNTER_Z_TARGET
     z_arc = COUNTER_Z_TARGET + FAUCET_ARC_HEIGHT
-    # prev_wp is shared ACROSS rows so inter-row diagonal transitions (which
-    # are the ones that actually drag the arm through the faucet volume) get
-    # an arc-over too. The 'jump' between end-of-row-N and start-of-row-N+1
-    # is the most common offender on a snake raster.
+    # Sponge orientation policy:
+    #   SWEEP (motion along X within a row)   → tcp_yaw = 90°  (long axis ⟂ motion, wide swath)
+    #   TURN  (motion along Y between rows)   → tcp_yaw =  0°  (long axis ⟂ Y-motion)
+    YAW_SWEEP_DEG = 90.0
+    YAW_TURN_DEG  =  0.0
     prev_wp = None
 
     def _maybe_insert_arc(prev: Waypoint, x: float, y: float):
         """In-plane roundabout: if the straight segment prev→(x,y) crosses
         the faucet keep-out disk, insert intermediate waypoints that arc
         around the disk at radius FAUCET_KEEPOUT_R. Tool stays on the
-        surface throughout."""
+        surface throughout. Roundabout uses TURN orientation."""
         if prev is None:
             return
         if not _segment_crosses_faucet((prev.x, prev.y), (x, y)):
             return
         for (ax, ay) in _roundabout_around_faucet((prev.x, prev.y), (x, y)):
-            waypoints.append(Waypoint(ax, ay, z_target, surface="countertop"))
+            waypoints.append(Waypoint(ax, ay, z_target, surface="countertop",
+                                       preferred_yaw_deg=YAW_TURN_DEG))
 
     for y in y_rows:
         line_xs = np.arange(x_min, x_max + 1e-9, sample_step)
         if direction < 0:
             line_xs = line_xs[::-1]
+        first_x_in_row = None
         for x in line_xs:
             in_keepout = not _faucet_clear(x, y)
             if use_reachable_mask and not _nearest_reachable(x, y, xs, ys_mask, reach_mask):
                 continue
             if in_keepout:
                 continue   # never wipe cells under the faucet itself
+
+            # Inter-row TRANSITION: rotate sponge to TURN orientation AT the
+            # last sweep waypoint, traverse to the new row's first X at TURN
+            # orientation, then resume SWEEP at the new wipe waypoint.
+            if first_x_in_row is None and prev_wp is not None:
+                waypoints.append(Waypoint(prev_wp.x, prev_wp.y, z_target,
+                                          surface="countertop",
+                                          preferred_yaw_deg=YAW_TURN_DEG))
+                waypoints.append(Waypoint(float(x), float(y), z_target,
+                                          surface="countertop",
+                                          preferred_yaw_deg=YAW_TURN_DEG))
+
             _maybe_insert_arc(prev_wp, float(x), float(y))
             wp = Waypoint(x=float(x), y=float(y), z=z_target,
-                          surface="countertop")
+                          surface="countertop",
+                          preferred_yaw_deg=YAW_SWEEP_DEG)
             waypoints.append(wp)
             prev_wp = wp
+            if first_x_in_row is None:
+                first_x_in_row = float(x)
         direction *= -1
 
     # Build swath polygons (one per surface-contact waypoint) for visualization.
@@ -346,10 +371,14 @@ def mirror_wipe(
     # (semicircle radius 0.10, so z=0.20 is comfortably above its top).
     z_split = MIRROR_BOTTOM_BAN_RADIUS + PAD_LONG          # 0.20 m
 
-    row_pitch = PAD_LONG * (1 - overlap)                    # 85 mm
+    row_pitch = PAD_LONG * (1 - overlap)                    # 85 mm (horizontal phase)
+    # Vertical-strip phase: sponge stays VERTICAL (long axis along world Z),
+    # so motion-direction == long-axis direction during the Z-sweep. Swath
+    # is then PAD_SHORT (50 mm) wide → pitch in X must be PAD_SHORT × overlap.
+    vstrip_pitch = PAD_SHORT * (1 - overlap)                # 42.5 mm
     # Inside edge of each vertical strip — just outside the bottom-centre
-    # semicircle radius, plus a half-pad so the pad clears the exclusion.
-    x_inner = MIRROR_BOTTOM_BAN_RADIUS + PAD_LONG / 2      # 0.15 m
+    # semicircle radius, plus a half-pad so the sponge clears the exclusion.
+    x_inner = MIRROR_BOTTOM_BAN_RADIUS + PAD_SHORT / 2 + 0.005   # 0.16 m
 
     # Load reachability mask
     reach_xs = reach_zs = None
@@ -402,7 +431,7 @@ def mirror_wipe(
 
     # ── Phase 2: right vertical strips, top → bottom ─────────────────────
     # Column X values from outermost RIGHT to innermost (= x_inner).
-    x_right_cols = list(np.arange(x_right_outer, x_inner - 1e-9, -row_pitch))
+    x_right_cols = list(np.arange(x_right_outer, x_inner - 1e-9, -vstrip_pitch))
     direction_z = -1   # first vertical pass goes DOWN
     for x in x_right_cols:
         z_samples = np.arange(z_split, z_min - 1e-9, -sample_step)
@@ -414,7 +443,9 @@ def mirror_wipe(
             wp = Waypoint(x=float(x), y=MIRROR_Y_TARGET, z=float(z),
                           surface="mirror")
             waypoints.append(wp)
-            swath_polys.append(_pad_polygon(float(x), float(z), long_axis="x"))
+            # Sponge is VERTICAL (long axis along world Z) regardless of leg —
+            # consistent visualization that matches the IK yaw preference.
+            swath_polys.append(_pad_polygon(float(x), float(z), long_axis="y"))
         direction_z *= -1
 
     # ── Phase 3: roundabout around faucet semicircle ─────────────────────
@@ -438,7 +469,7 @@ def mirror_wipe(
         swath_polys.append(_pad_polygon(float(x), float(z), long_axis="y"))
 
     # ── Phase 4: left vertical strips, bottom → top (continuing the sweep) ─
-    x_left_cols = list(np.arange(-x_inner, x_left_outer - 1e-9, -row_pitch))
+    x_left_cols = list(np.arange(-x_inner, x_left_outer - 1e-9, -vstrip_pitch))
     direction_z = +1   # coming out of the roundabout heading UP
     for x in x_left_cols:
         z_samples = np.arange(z_min, z_split + 1e-9, sample_step)
@@ -450,7 +481,9 @@ def mirror_wipe(
             wp = Waypoint(x=float(x), y=MIRROR_Y_TARGET, z=float(z),
                           surface="mirror")
             waypoints.append(wp)
-            swath_polys.append(_pad_polygon(float(x), float(z), long_axis="x"))
+            # Sponge is VERTICAL (long axis along world Z) regardless of leg —
+            # consistent visualization that matches the IK yaw preference.
+            swath_polys.append(_pad_polygon(float(x), float(z), long_axis="y"))
         direction_z *= -1
 
     return CoveragePlan(
