@@ -180,7 +180,11 @@ python3 ~/PiperWipe/section2/code/replay_in_rviz.py
 PiperWipe/
 ├── README.md                  ← this file
 ├── kitchen_scene.py           ← shared MarkerArray publisher (countertop, mirror, faucet, sponge)
-├── kitchen.rviz               ← shared RViz 2 view config for the kitchen scene
+├── rviz/                      ← shared RViz 2 view configs (orbit / iso / mirror / top)
+│   ├── kitchen.rviz                 ← default orbit view (used by kitchen_full_launch.py)
+│   ├── kitchen_isoview.rviz         ← isometric view
+│   ├── kitchen_mirrorview.rviz      ← mirror-facing view
+│   └── kitchen_topview.rviz         ← top-down view (used for the wipe recording)
 ├── section1/                  Kinematics & reachability
 │   ├── README.md  + writeup.md
 │   ├── code/                  IKSolver lib, /solve_ik service, two heatmap scripts

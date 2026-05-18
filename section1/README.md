@@ -19,9 +19,9 @@ section1/
 ```
 
 The arm + scene visual markers live in the **existing** `piper_wiping` package
-(`kitchen_scene.py`, `kitchen_full_launch.py`, `kitchen.rviz`, URDF, controller
-configs). Section 1 deliverables only add the IK / scene-collision / heatmap
-pieces; the kitchen visualization is reused unchanged.
+(`kitchen_scene.py`, `kitchen_full_launch.py`, `rviz/kitchen.rviz`, URDF,
+controller configs). Section 1 deliverables only add the IK / scene-collision /
+heatmap pieces; the kitchen visualization is reused unchanged.
 
 ## Arm + scene configuration
 
