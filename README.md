@@ -6,11 +6,11 @@
 [![NumPy](https://img.shields.io/badge/NumPy-013243?logo=numpy&logoColor=white)](https://numpy.org/)
 [![Matplotlib](https://img.shields.io/badge/Matplotlib-11557C)](https://matplotlib.org/)
 
-[![Wipe demo — click to watch](https://img.youtube.com/vi/7buQRrrkuFw/maxresdefault.jpg)](https://youtube.com/shorts/7buQRrrkuFw)
+![Wipe demo (auto-looping)](section3/outputs/wipe_rviz.webp)
 
-> RViz playback of the wipe (click thumbnail for the YouTube Short). Raw
-> mp4 also in the repo at
-> [`section3/outputs/wipe_rviz.mp4`](section3/outputs/wipe_rviz.mp4).
+> RViz playback of the wipe — loops automatically.
+> [Watch with audio on YouTube](https://youtube.com/shorts/7buQRrrkuFw) ·
+> [Raw mp4](section3/outputs/wipe_rviz.mp4)
 
 End-to-end take-home for a kitchen-cleaning manipulator: kinematics &
 reachability → coverage path planning → contact-aware force control.
@@ -82,10 +82,10 @@ Recorded screen capture of the joint trajectories executing on
 `/arm_controller/follow_joint_trajectory` against the live MoveIt 2 +
 kitchen scene:
 
-[![Wipe demo — click to watch](https://img.youtube.com/vi/7buQRrrkuFw/maxresdefault.jpg)](https://youtube.com/shorts/7buQRrrkuFw)
+![Wipe demo (auto-looping)](section3/outputs/wipe_rviz.webp)
 
-Raw mp4 in repo:
-[`section3/outputs/wipe_rviz.mp4`](section3/outputs/wipe_rviz.mp4).
+[Watch with audio on YouTube](https://youtube.com/shorts/7buQRrrkuFw) ·
+raw mp4 at [`section3/outputs/wipe_rviz.mp4`](section3/outputs/wipe_rviz.mp4).
 
 ---
 
