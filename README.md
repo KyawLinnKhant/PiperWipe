@@ -10,7 +10,7 @@
 
 > RViz playback of the wipe (click thumbnail for the YouTube Short). Raw
 > mp4 also in the repo at
-> [`section2/outputs/wipe_rviz.mp4`](section2/outputs/wipe_rviz.mp4).
+> [`section3/outputs/wipe_rviz.mp4`](section3/outputs/wipe_rviz.mp4).
 
 End-to-end take-home for a kitchen-cleaning manipulator: kinematics &
 reachability → coverage path planning → contact-aware force control.
@@ -85,8 +85,7 @@ kitchen scene:
 [![Wipe demo — click to watch](https://img.youtube.com/vi/7buQRrrkuFw/maxresdefault.jpg)](https://youtube.com/shorts/7buQRrrkuFw)
 
 Raw mp4 in repo:
-[`section3/outputs/wipe_rviz.mp4`](section3/outputs/wipe_rviz.mp4) (also at
-[`section2/outputs/wipe_rviz.mp4`](section2/outputs/wipe_rviz.mp4)).
+[`section3/outputs/wipe_rviz.mp4`](section3/outputs/wipe_rviz.mp4).
 
 ---
 
