@@ -6,7 +6,10 @@
 [![NumPy](https://img.shields.io/badge/NumPy-013243?logo=numpy&logoColor=white)](https://numpy.org/)
 [![Matplotlib](https://img.shields.io/badge/Matplotlib-11557C)](https://matplotlib.org/)
 
-https://github.com/KyawLinnKhant/PiperWipe/raw/main/section2/outputs/wipe_rviz.mp4
+<video src="https://github.com/KyawLinnKhant/PiperWipe/raw/main/section2/outputs/wipe_rviz.mp4" controls muted width="100%"></video>
+
+> RViz playback of the wipe. If the inline player doesn't show, download
+> [section2/outputs/wipe_rviz.mp4](section2/outputs/wipe_rviz.mp4).
 
 End-to-end take-home for a kitchen-cleaning manipulator: kinematics &
 reachability → coverage path planning → contact-aware force control.
@@ -78,9 +81,9 @@ Recorded screen capture of the joint trajectories executing on
 `/arm_controller/follow_joint_trajectory` against the live MoveIt 2 +
 kitchen scene:
 
-https://github.com/KyawLinnKhant/PiperWipe/raw/main/section3/outputs/wipe_rviz.mp4
+<video src="https://github.com/KyawLinnKhant/PiperWipe/raw/main/section3/outputs/wipe_rviz.mp4" controls muted width="100%"></video>
 
-(Also at [`section2/outputs/wipe_rviz.mp4`](https://github.com/KyawLinnKhant/PiperWipe/raw/main/section2/outputs/wipe_rviz.mp4).)
+(Same file also at [`section2/outputs/wipe_rviz.mp4`](section2/outputs/wipe_rviz.mp4).)
 
 ---
 
